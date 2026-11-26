@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Flashcards de Inglês - Ricardo</title>
+<style>
+:root{--bg:#f4f6fb;--card:#fff;--ink:#1f2540;--mut:#6b7390;--pri:#4f46e5;--pri2:#eef0ff;--ok:#16a34a;--okbg:#dcfce7;--mid:#d97706;--midbg:#fef3c7;--bad:#dc2626;--badbg:#fee2e2;--line:#e3e7f1}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;line-height:1.45}
+.app{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:1.5rem;margin:0}
+.sub{color:var(--mut);margin:2px 0 16px}
+.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+.stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px;text-align:center}
+.stat b{display:block;font-size:1.8rem;line-height:1.1}
+.stat span{font-size:.8rem;color:var(--mut)}
+.stat.n b{color:var(--pri)}.stat.r b{color:var(--mid)}.stat.d b{color:var(--ok)}
+.goal{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;margin-bottom:18px}
+.goal .row{display:flex;justify-content:space-between;font-weight:600;margin-bottom:8px}
+.bar{height:12px;background:var(--line);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pri),#22c55e);border-radius:99px;transition:width .4s}
+.goal.done{border-color:var(--ok);background:var(--okbg)}
+h2{font-size:1.1rem;margin:22px 0 10px}
+.cats{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px}
+.cat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:12px 14px;text-align:left;cursor:pointer;font:inherit;color:inherit}
+.cat:hover{border-color:var(--pri);background:var(--pri2)}
+.cat .ic{font-size:1.4rem}.cat .en{font-weight:700;display:block}.cat .pt{font-size:.85rem;color:var(--mut)}
+.cat .cnt{margin-top:6px;font-size:.8rem}
+.pill{display:inline-block;border-radius:99px;padding:1px 8px;margin-right:4px;font-weight:600}
+.pill.n{background:var(--pri2);color:var(--pri)}.pill.r{background:var(--midbg);color:var(--mid)}
+.cat.all{grid-column:1/-1;background:var(--pri);color:#fff;border-color:var(--pri)}
+.cat.all .pt{color:#e0e3ff}
+.back-btn{background:none;border:none;color:var(--pri);font:inherit;font-weight:600;cursor:pointer;padding:4px 0;margin-bottom:8px}
+.scene{perspective:1200px}
+.card{display:grid;cursor:pointer;transition:transform .55s;transform-style:preserve-3d;min-height:260px}
+.card.flip{transform:rotateY(180deg)}
+.face{grid-area:1/1;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--card);border:1px solid var(--line);border-radius:20px;padding:22px;box-shadow:0 6px 20px rgba(40,50,100,.08)}
+.front{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:12px}
+.back{transform:rotateY(180deg)}
+.catlabel{font-size:.8rem;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}
+.word{font-size:2.2rem;font-weight:800;color:var(--pri)}
+.word.sm{font-size:1.2rem}
+.hint{color:var(--mut);font-size:.9rem}
+.spk{background:var(--pri2);color:var(--pri);border:none;border-radius:99px;padding:8px 16px;font:inherit;font-weight:600;cursor:pointer}
+.tr{font-size:1.6rem;font-weight:800;margin:2px 0 10px}
+.blk{background:#f7f8fc;border-radius:12px;padding:9px 12px;margin-bottom:8px;font-size:.95rem}
+.blk b{display:block;font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mut)}
+.blk.tip{background:var(--midbg)}
+.blk i{color:var(--mut)}
+.mini{background:none;border:none;cursor:pointer;font-size:1rem;padding:0 4px}
+.qa{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;margin-top:14px}
+.qa .q{font-weight:600;margin-bottom:10px}
+.opt{display:block;width:100%;text-align:left;margin-bottom:8px;padding:10px 12px;border-radius:12px;border:2px solid var(--line);background:#fff;font:inherit;cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--pri)}
+.opt.ok{border-color:var(--ok);background:var(--okbg)}.opt.bad{border-color:var(--bad);background:var(--badbg)}
+.fb{font-weight:700;margin:4px 0 2px}
+.rate{margin-top:14px}
+.rate p{margin:0 0 8px;font-weight:600}
+.rbtns{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.rbtns button{border:none;border-radius:12px;padding:12px 6px;font:inherit;font-weight:700;cursor:pointer;line-height:1.25}
+.rbtns small{display:block;font-weight:500;font-size:.75rem}
+.rbtns .e{background:var(--okbg);color:var(--ok)}.rbtns .m{background:var(--midbg);color:var(--mid)}.rbtns .h{background:var(--badbg);color:var(--bad)}
+.empty{background:var(--card);border:1px dashed var(--line);border-radius:16px;padding:26px;text-align:center}
+.dict{display:grid;gap:8px}
+.entry{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 14px}
+.entry summary{cursor:pointer;display:flex;justify-content:space-between;gap:8px;font-weight:600;list-style:none}
+.entry summary span{color:var(--mut);font-weight:500}
+.entry .det{margin-top:8px;font-size:.92rem}
+.entry button.rv{margin-top:6px;background:var(--pri2);color:var(--pri);border:none;border-radius:99px;padding:6px 12px;font:inherit;font-weight:600;cursor:pointer}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 16px;border-radius:99px;font-size:.9rem;opacity:0;pointer-events:none;transition:opacity .3s;z-index:9;max-width:90%}
+.toast.on{opacity:1}
+.reset{margin-top:30px;background:none;border:none;color:var(--mut);text-decoration:underline;cursor:pointer;font:inherit;font-size:.8rem}
+[hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="app">
+ <h1>📚 Flashcards de Inglês</h1>
+ <p class="sub">Olá, <b id="who"></b>! Vamos praticar?</p>
+
+ <div class="stats">
+  <div class="stat n"><b id="sNew">0</b><span>🆕 palavras novas</span></div>
+  <div class="stat r"><b id="sRev">0</b><span>🔁 para rever</span></div>
+  <div class="stat d"><b id="sDone">0</b><span>✅ no dicionário</span></div>
+ </div>
+ <div class="goal" id="goal">
+  <div class="row"><span id="goalTxt">🎯 Meta de hoje</span><span id="goalNum">0 / 10</span></div>
+  <div class="bar"><i id="goalBar"></i></div>
+ </div>
+
+ <section id="menu">
+  <h2>Escolha uma categoria</h2>
+  <div class="cats" id="cats"></div>
+ </section>
+
+ <section id="study" hidden>
+  <button class="back-btn" id="backBtn">← Voltar às categorias</button>
+  <div id="stage"></div>
+ </section>
+
+ <section id="dictSec">
+  <h2>📖 Meu dicionário <small style="font-weight:400;color:var(--mut)">(palavras fáceis vistas 2 vezes)</small></h2>
+  <div class="dict" id="dict"></div>
+ </section>
+
+ <button class="reset" id="resetBtn">Apagar meu progresso</button>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+const DATA = {"name": "Ricardo", "cats": {"nouns": {"en": "Nouns", "pt": "Substantivos", "icon": "📦"}, "adjectives": {"en": "Adjectives", "pt": "Adjetivos", "icon": "🎨"}, "present": {"en": "Simple Present Verbs", "pt": "Verbos no presente", "icon": "▶️"}, "past": {"en": "Simple Past Verbs", "pt": "Verbos no passado", "icon": "⏪"}, "plurals": {"en": "Plurals", "pt": "Plurais", "icon": "👥"}, "other": {"en": "Other Vocabulary", "pt": "Outros vocábulos", "icon": "📝"}}, "cards": [{"c": "nouns", "w": "Ground", "t": "Chão", "ex": "Sit on the ground.", "tip": "Chão ao ar livre, terra. Dentro de casa, o piso é 'floor'.", "s": "The ball fell on the ground.", "sp": "A bola caiu no chão."}, {"c": "nouns", "w": "Field", "t": "Campo", "ex": "A soccer field.", "tip": "Serve para campo de plantação ou campo de jogo.", "s": "The kids play soccer in the field.", "sp": "As crianças jogam futebol no campo."}, {"c": "nouns", "w": "Mouse", "t": "Rato / camundongo", "ex": "A little mouse.", "tip": "Plural irregular: mice. É também o mouse do computador.", "s": "A mouse is hiding under the sofa.", "sp": "Um rato está se escondendo debaixo do sofá."}, {"c": "nouns", "w": "Leaf", "t": "Folha", "ex": "A green leaf.", "tip": "Folha de árvore. O plural é irregular: leaves.", "s": "A green leaf fell from the tree.", "sp": "Uma folha verde caiu da árvore."}, {"c": "nouns", "w": "Cheer", "t": "Torcer / torcida", "ex": "I cheer for my team.", "tip": "Como verbo: 'cheer for' + time. Como substantivo: grito de apoio.", "s": "I cheer for my favorite team.", "sp": "Eu torço para o meu time favorito."}, {"c": "adjectives", "w": "Grounded", "t": "De castigo", "ex": "I am grounded.", "tip": "Quando os pais proíbem você de sair. Não tem a ver com 'chão' aqui.", "s": "I am grounded, so I cannot go out.", "sp": "Estou de castigo, então não posso sair."}, {"c": "present", "w": "Buy", "t": "Comprar", "ex": "Buy a ticket.", "tip": "Verbo irregular. Passado: bought.", "s": "They buy bread every morning.", "sp": "Eles compram pão toda manhã."}, {"c": "present", "w": "Find", "t": "Encontrar", "ex": "Find your keys.", "tip": "Verbo irregular. Passado: found.", "s": "I find my keys in my bag.", "sp": "Eu encontro minhas chaves na bolsa."}, {"c": "present", "w": "Chase", "t": "Perseguir", "ex": "Chase the ball.", "tip": "Correr atrás de algo ou alguém. Passado regular: chased.", "s": "The dog chases the cat.", "sp": "O cachorro persegue o gato."}, {"c": "past", "w": "Bought", "t": "Comprou / compraram", "ex": "I bought a new phone.", "tip": "Passado irregular de buy. A pronúncia é 'bót'.", "s": "She bought a new bike yesterday.", "sp": "Ela comprou uma bicicleta nova ontem."}, {"c": "past", "w": "Found", "t": "Encontrou / encontraram", "ex": "We found a wallet.", "tip": "Passado irregular de find. Não confunda com 'fundar'.", "s": "We found a wallet in the park.", "sp": "Nós encontramos uma carteira no parque."}, {"c": "past", "w": "Chased", "t": "Perseguiu / perseguiram", "ex": "The dog chased me.", "tip": "Passado regular: chase + d, pois já termina em 'e'.", "s": "The cat chased the mouse through the field.", "sp": "O gato perseguiu o rato pelo campo."}, {"c": "plurals", "w": "Mice", "t": "Ratos", "ex": "Two mice.", "tip": "Plural irregular de mouse (mouse → mice). Não existe 'mouses' nesse sentido.", "s": "Two mice ran through the kitchen.", "sp": "Dois ratos correram pela cozinha."}, {"c": "plurals", "w": "Leaves", "t": "Folhas", "ex": "Green leaves.", "tip": "Plural de leaf: o 'f' vira 'v' e entra 'es' (leaf → leaves).", "s": "The leaves fall in autumn.", "sp": "As folhas caem no outono."}, {"c": "other", "w": "Through", "t": "Através de", "ex": "Walk through the field.", "tip": "Passar por dentro de algo, de um lado ao outro.", "s": "We walked through the field.", "sp": "Nós caminhamos pelo campo."}, {"c": "other", "w": "Mainly", "t": "Principalmente", "ex": "I mainly study at night.", "tip": "Costuma vir antes do verbo principal.", "s": "I mainly study at night.", "sp": "Eu estudo principalmente à noite."}]};
+const GOAL = 10, DAY = 86400000;
+const KEY = 'flashcards_en_' + DATA.name;
+let mem = null;
+function load(){ try{ const r = localStorage.getItem(KEY); if(r) return JSON.parse(r); }catch(e){} return mem || {p:{}}; }
+function save(){ mem = S; try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+let S = load(); if(!S.p) S.p = {};
+let sessionDone = 0, goalToast = false;
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const P = id => S.p[id] || (S.p[id] = {seen:false, due:0, easy:0, mastered:false});
+const isNew = c => { const p = P(c.id); return !p.seen && !p.mastered; };
+const isDue = c => { const p = P(c.id); return p.seen && !p.mastered && p.due <= Date.now(); };
+const isDone = c => P(c.id).mastered;
+const shuffle = a => { a = a.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; };
+
+DATA.cards.forEach(c => c.id = c.c + ':' + c.w);
+$('who').textContent = DATA.name;
+
+function speak(t){
+  if(!('speechSynthesis' in window)) return;
+  try{ speechSynthesis.cancel(); const u = new SpeechSynthesisUtterance(t); u.lang='en-US'; u.rate=.85; speechSynthesis.speak(u); }catch(e){}
+}
+function toast(m){ const t=$('toast'); t.textContent=m; t.classList.add('on'); setTimeout(()=>t.classList.remove('on'),2600); }
+
+function renderStats(){
+  $('sNew').textContent = DATA.cards.filter(isNew).length;
+  $('sRev').textContent = DATA.cards.filter(isDue).length;
+  $('sDone').textContent = DATA.cards.filter(isDone).length;
+  const n = Math.min(sessionDone, GOAL);
+  $('goalNum').textContent = sessionDone + ' / ' + GOAL;
+  $('goalBar').style.width = (n / GOAL * 100) + '%';
+  const done = sessionDone >= GOAL;
+  $('goal').classList.toggle('done', done);
+  $('goalTxt').textContent = done ? '🎉 Meta de hoje cumprida! Continue se quiser.' : '🎯 Meta desta visita: ' + GOAL + ' palavras';
+}
+
+function renderMenu(){
+  const box = $('cats'); box.innerHTML = '';
+  const mk = (key, ic, en, pt, pool) => {
+    const b = document.createElement('button'); b.className = 'cat' + (key==='all' ? ' all' : '');
+    const nn = pool.filter(isNew).length, rr = pool.filter(isDue).length;
+    b.innerHTML = '<span class="ic">'+ic+'</span> <span class="en">'+esc(en)+'</span><span class="pt">'+esc(pt)+'</span>' +
+      '<div class="cnt"><span class="pill n">'+nn+' novas</span><span class="pill r">'+rr+' p/ rever</span></div>';
+    b.onclick = () => start(key);
+    box.appendChild(b);
+  };
+  mk('all','🚀','Todas as categorias','Misturar tudo', DATA.cards);
+  const keys = [...new Set(DATA.cards.map(c => c.c))];
+  keys.forEach(k => { const m = DATA.cats[k]; mk(k, m.icon, m.en, m.pt, DATA.cards.filter(c => c.c === k)); });
+}
+
+function renderDict(){
+  const box = $('dict'); const list = DATA.cards.filter(isDone);
+  if(!list.length){ box.innerHTML = '<div class="empty">Ainda vazio. Marque uma palavra como <b>Fácil</b> 2 vezes e ela vem para cá.</div>'; return; }
+  box.innerHTML = '';
+  list.forEach(c => {
+    const d = document.createElement('details'); d.className = 'entry';
+    d.innerHTML = '<summary><div>'+esc(c.w)+'</div><span>'+esc(c.t)+'</span></summary>' +
+      '<div class="det"><div>🔊 <button class="mini" data-s="'+esc(c.w)+'">ouvir</button></div>' +
+      '<div><b>Exemplo:</b> '+esc(c.ex)+'</div><div><b>Macete:</b> '+esc(c.tip)+'</div>' +
+      '<div><b>Frase:</b> '+esc(c.s)+' <i>('+esc(c.sp)+')</i></div>' +
+      '<button class="rv">Rever esta palavra de novo</button></div>';
+    d.querySelector('.mini').onclick = e => { e.preventDefault(); speak(c.w); };
+    d.querySelector('.rv').onclick = () => { const p = P(c.id); p.mastered = false; p.easy = 0; p.due = Date.now(); save(); refresh(); toast('Palavra voltou para a lista de revisão'); };
+    box.appendChild(d);
+  });
+}
+
+function refresh(){ renderStats(); renderMenu(); renderDict(); }
+
+let queue = [], curKey = 'all', cur = null, pool = [];
+function start(key){
+  curKey = key;
+  pool = key === 'all' ? DATA.cards : DATA.cards.filter(c => c.c === key);
+  const due = pool.filter(isDue).sort((a,b) => P(a.id).due - P(b.id).due);
+  queue = due.concat(shuffle(pool.filter(isNew)));
+  $('menu').hidden = true; $('study').hidden = false;
+  next();
+}
+function leave(){ try{ speechSynthesis.cancel(); }catch(e){} $('study').hidden = true; $('menu').hidden = false; refresh(); window.scrollTo({top:0,behavior:'smooth'}); }
+$('backBtn').onclick = leave;
+
+function next(){
+  cur = queue.shift(); flipped = false; refresh();
+  const st = $('stage');
+  if(!cur){
+    st.innerHTML = '<div class="empty"><div style="font-size:2rem">🎉</div><b>Nada mais para estudar aqui agora!</b><p>As palavras que você já viu voltam conforme o prazo que escolheu.</p><button class="spk" id="okBtn">Escolher outra categoria</button></div>';
+    $('okBtn').onclick = leave; return;
+  }
+  const m = DATA.cats[cur.c];
+  st.innerHTML =
+   '<div class="scene"><div class="card" id="card">' +
+    '<div class="face front"><div class="catlabel">'+m.icon+' '+esc(m.en)+(P(cur.id).seen?' · revisão':' · nova')+'</div>' +
+     '<div class="word">'+esc(cur.w)+'</div><button class="spk" id="spk">🔊 Ouvir</button>' +
+     '<div class="hint">Toque na carta para ver a tradução</div></div>' +
+    '<div class="face back"><div class="word sm">'+esc(cur.w)+' <button class="mini" id="spk2">🔊</button></div>' +
+     '<div class="tr">'+esc(cur.t)+'</div>' +
+     '<div class="blk"><b>Exemplo</b>'+esc(cur.ex)+'</div>' +
+     '<div class="blk tip"><b>💡 Macete</b>'+esc(cur.tip)+'</div>' +
+     '<div class="blk"><b>Frase</b>'+esc(cur.s)+' <button class="mini" id="spk3">🔊</button><br><i>'+esc(cur.sp)+'</i></div>' +
+    '</div></div></div>' +
+    '<div class="qa" id="qa" hidden></div><div class="rate" id="rate" hidden></div>';
+  const card = $('card');
+  $('spk').onclick = e => { e.stopPropagation(); speak(cur.w); };
+  $('spk2').onclick = e => { e.stopPropagation(); speak(cur.w); };
+  $('spk3').onclick = e => { e.stopPropagation(); speak(cur.s); };
+  card.onclick = () => flip(card);
+  setTimeout(() => speak(cur.w), 250);
+}
+
+let flipped = false;
+function flip(card){
+  card.classList.toggle('flip');
+  if(!flipped){ flipped = true; showQuestion(); }
+}
+
+function showQuestion(){
+  const wrong = shuffle(DATA.cards.filter(c => c.t !== cur.t && c.c === cur.c));
+  const more = shuffle(DATA.cards.filter(c => c.t !== cur.t && c.c !== cur.c));
+  const seen = new Set([cur.t]); const opts = [{t:cur.t, ok:true}];
+  wrong.concat(more).forEach(c => { if(opts.length < 3 && !seen.has(c.t)){ seen.add(c.t); opts.push({t:c.t, ok:false}); } });
+  const qa = $('qa'); qa.hidden = false;
+  qa.innerHTML = '<div class="q">❓ Na frase: “'+esc(cur.s)+'” — o que significa <u>'+esc(cur.w)+'</u>?</div>';
+  shuffle(opts).forEach(o => {
+    const b = document.createElement('button'); b.className = 'opt'; b.textContent = o.t;
+    b.onclick = () => {
+      qa.querySelectorAll('.opt').forEach(x => { x.disabled = true; if(x.textContent === cur.t) x.classList.add('ok'); });
+      if(!o.ok) b.classList.add('bad');
+      const f = document.createElement('div'); f.className = 'fb';
+      f.textContent = o.ok ? '✅ Isso mesmo!' : '❌ Quase! A resposta certa está em verde.';
+      qa.appendChild(f); showRate();
+    };
+    qa.appendChild(b);
+  });
+}
+
+function showRate(){
+  const r = $('rate'); r.hidden = false;
+  r.innerHTML = '<p>Como foi essa palavra?</p><div class="rbtns">' +
+   '<button class="e" data-r="e">😄 Fácil<small>rever em 1 semana</small></button>' +
+   '<button class="m" data-r="m">🙂 Médio<small>rever em alguns dias</small></button>' +
+   '<button class="h" data-r="h">😓 Difícil<small>rever amanhã</small></button></div>';
+  r.querySelectorAll('button').forEach(b => b.onclick = () => rate(b.dataset.r));
+  r.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function rate(r){
+  const p = P(cur.id); p.seen = true; const now = Date.now();
+  if(r === 'e'){
+    p.easy++; p.due = now + 7*DAY;
+    if(p.easy >= 2){ p.mastered = true; toast('🌟 "'+cur.w+'" foi para o seu dicionário!'); }
+  } else if(r === 'm'){ p.due = now + 3*DAY; }
+  else { p.due = now + 1*DAY; }
+  sessionDone++; save(); flipped = false;
+  if(sessionDone === GOAL && !goalToast){ goalToast = true; toast('🎉 Meta cumprida: 10 palavras!'); }
+  next();
+}
+
+$('resetBtn').onclick = () => { if(confirm('Apagar todo o seu progresso neste material?')){ S = {p:{}}; sessionDone = 0; goalToast = false; save(); refresh(); } };
+refresh();
+</script>
+</body>
+</html>
